@@ -23,14 +23,18 @@
                     <div class="col-sm-5">
                         <input type="text" class="form-control" id="name" placeholder="Nueva tarea...">
                     </div>
+
+                    @foreach ($categories as $category)
                     <div class="col-auto">
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="category-1">
-                            <label class="form-check-label" for="category-1">
-                                PHP
+                            <input class="form-check-input" type="checkbox" id="category-{{ $category->id }}">
+                            <label class="form-check-label" for="category-{{ $category->id }}">
+                                {{ $category->name }}
                             </label>
                         </div>
                     </div>
+                    @endforeach
+
                     <div class="col-auto">
                         <button type="submit" class="btn btn-primary">Añadir</button>
                     </div>
