@@ -53,15 +53,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>Tarea número uno</td>
-                                <td>
-                                    <span class="badge rounded-pill text-bg-secondary">PHP</span>
-                                </td>
-                                <td>
-                                    <button class="btn btn-sm btn-danger">Eliminar</button>
-                                </td>
-                            </tr>
+                            
                         </tbody>
                     </table>
                 </div>
@@ -78,6 +70,8 @@
     <script>
 
         $(function() {
+
+            loadTasks();
 
             $("#create-task").submit(function(event) {
         
@@ -99,6 +93,7 @@
                     if(result.code === 201){
                         alert('Tarea creada');
                         clearForm();
+                        loadTasks();
                     }
                 });
             });
@@ -109,6 +104,31 @@
             $("input[name='name']").val('');
             $("input:checkbox[name='categories']:checked").each(function() {
                 $(this).prop('checked', false);
+            });
+        };
+
+        const loadTasks = () => {
+            let loading = $.get('/api/tasks');
+
+            loading.done(data => {
+                if(data.code === 200){
+                    $("table tbody").html('');
+
+                    let append = '',
+                    appendCategories = '';
+
+                    (data.data).forEach(element => {
+                        appendCategories = (element.categories).map(el => `<span class="badge rounded-pill text-bg-secondary">${el.name}</span>`);
+
+                        append =`<tr>
+                            <td>${element.name}</td>
+                            <td>${appendCategories.join(' ')}</td>
+                            <td><button class="btn btn-sm btn-danger" onClick="javascript:void(0);">Eliminar</button></td>
+                        </tr>`;
+
+                        $("table tbody").append(append);
+                    });
+                }
             });
         };
         

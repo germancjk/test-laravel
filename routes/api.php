@@ -16,3 +16,4 @@ use App\Http\Controllers\TaskController;
 */
 
 Route::post('/task', [TaskController::class, 'store']);
+Route::get('/tasks', [TaskController::class, 'tasks']);

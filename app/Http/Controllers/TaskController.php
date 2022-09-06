@@ -33,4 +33,16 @@ class TaskController extends Controller
             'message'=> 'Task created',
         ]);
     }
+
+    public function tasks()
+    {
+        $tasks = Task::with('categories')->get();
+
+        return response()->json([
+            'status' => true,
+            'code' => 200,
+            'data'=> $tasks,
+        ]);
+    }
+
 }
