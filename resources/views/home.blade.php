@@ -10,6 +10,8 @@
     
         <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
     </head>
     <body>
 
@@ -19,15 +21,15 @@
                 <h1 class="mb-5">Gestor de tareas</h1>
 
                 <!-- form -->
-                <form class="row gx-3 gy-2 align-items-center mb-5">
+                <form class="row gx-3 gy-2 align-items-center mb-5" action="/" id="create-task">
                     <div class="col-sm-5">
-                        <input type="text" class="form-control" id="name" placeholder="Nueva tarea...">
+                        <input type="text" class="form-control" name="name" placeholder="Nueva tarea...">
                     </div>
 
                     @foreach ($categories as $category)
                     <div class="col-auto">
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="category-{{ $category->id }}">
+                            <input class="form-check-input" type="checkbox" name="categories" value="{{ $category->id }}" id="category-{{ $category->id }}">
                             <label class="form-check-label" for="category-{{ $category->id }}">
                                 {{ $category->name }}
                             </label>
@@ -73,6 +75,43 @@
 
     </body>
 
+    <script>
 
+        $(function() {
+
+            $("#create-task").submit(function(event) {
+        
+                event.preventDefault();
+
+                let $form = $( this ),
+                name = $form.find( "input[name='name']" ).val(),
+                categories = [];
+
+                $("input:checkbox[name='categories']:checked").each(function() {
+                    categories.push(parseInt($(this).val()));
+                });
+
+                const categoriesJson = JSON.stringify(categories);
+
+                let creating = $.post( '/api/task', { name: name, categories: categoriesJson } );
+
+                creating.done(result => {
+                    if(result.code === 201){
+                        alert('Tarea creada');
+                        clearForm();
+                    }
+                });
+            });
+
+        });
+
+        const clearForm = () => {
+            $("input[name='name']").val('');
+            $("input:checkbox[name='categories']:checked").each(function() {
+                $(this).prop('checked', false);
+            });
+        };
+        
+    </script>
 
 </html>
