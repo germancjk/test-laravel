@@ -45,4 +45,16 @@ class TaskController extends Controller
         ]);
     }
 
+    public function destroy($id)
+    {
+        $task = Task::find($id);
+ 
+        $status = $task->delete();
+
+        return response()->json([
+            'status' => $status,
+            'code' => 200,
+            'message' => $status ? 'Task Deleted' : 'Error Deleting Task'
+        ]);
+    }
 }

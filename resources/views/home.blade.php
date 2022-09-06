@@ -123,7 +123,7 @@
                         append =`<tr>
                             <td>${element.name}</td>
                             <td>${appendCategories.join(' ')}</td>
-                            <td><button class="btn btn-sm btn-danger" onClick="javascript:void(0);">Eliminar</button></td>
+                            <td><button class="btn btn-sm btn-danger" onClick="deleteTask(${element.id});">Eliminar</button></td>
                         </tr>`;
 
                         $("table tbody").append(append);
@@ -131,6 +131,22 @@
                 }
             });
         };
+
+        const deleteTask = (id) => {
+
+            let deleting = $.ajax({
+                url: `/api/task/${id}`,
+                type: 'DELETE',
+                data: {_token:'{{ csrf_token() }}'},
+            });
+
+            deleting.done(result => {
+                if(result.code === 200 && result.status){
+                    alert('Tarea eliminada');
+                    loadTasks();
+                }
+            });
+        }
         
     </script>
 
