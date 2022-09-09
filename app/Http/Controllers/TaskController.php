@@ -2,30 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\{ Task, TaskRelCategory };
+use App\Http\Requests\TaskStoreRequest;
+use App\Services\TaskService;
 
 class TaskController extends Controller
 {
-    public function store(Request $request)
+    public function store(TaskStoreRequest $request, TaskService $taskService)
     {
-        $validatedData = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'categories' => ['required', 'json'],
-        ]);
+        $validatedData = $request->validated();
 
-        $task = Task::create([
-            'name' => $validatedData['name'],
-        ]);
+        $task = $taskService->createTask($validatedData['name']);
 
         $categoriesArray = \json_decode($validatedData['categories'], true);
-
-        foreach ($categoriesArray as $category) {
-            $taskRelCategory = TaskRelCategory::create([
-                'task_id' => $task->id,
-                'category_id' => (int) $category,
-            ]);
-        }
+        $categories = $taskService->createTaskCategories($task, $categoriesArray);
 
         return response()->json([
             'status' => true,
@@ -34,22 +23,18 @@ class TaskController extends Controller
         ]);
     }
 
-    public function tasks()
+    public function tasks(TaskService $taskService)
     {
-        $tasks = Task::with('categories')->get();
-
         return response()->json([
             'status' => true,
             'code' => 200,
-            'data'=> $tasks,
+            'data'=> $taskService->getTasks(),
         ]);
     }
 
-    public function destroy($id)
+    public function destroy(int $id, TaskService $taskService)
     {
-        $task = Task::find($id);
- 
-        $status = $task->delete();
+        $status = $taskService->deleteTask($id);
 
         return response()->json([
             'status' => $status,
