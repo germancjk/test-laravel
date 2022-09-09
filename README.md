@@ -11,15 +11,16 @@ Proyecto desarrollado por Germán González.
    ```sh
    composer install
    ```
-3. Genera la app key
+3. Genera un archivo .env, puedes utilizar el ejemplo de `.env.example` (por defecto utilizaremos MySql)
+4. Genera la app key
     ```sh
    php artisan key:generate
    ```
-4. Realiza las migraciones en la base de datos
+5. Realiza las migraciones en la base de datos
    ```sh
    php artisan migrate
    ```
-5. Genera los datos por defecto de la tabla categorias
+6. Genera los datos por defecto de la tabla categorias
    ```sh
    php artisan db:seed
    ```
