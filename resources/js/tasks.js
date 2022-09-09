@@ -1,8 +1,6 @@
 $(function() {
 
     loadTasks();
-    
-    
 
     $("#create-task").submit(function(event) {
 
@@ -68,8 +66,8 @@ const loadTasks = () => {
             let append = '',
             appendCategories = '';
 
-            (data.data).forEach(element => {
-                appendCategories = (element.categories).map(el => `<span class="badge rounded-pill text-bg-secondary">${el.name}</span>`);
+            jQuery.each(data.data, function(index, element) {
+                appendCategories = (element.categories).map(el => `<span class="badge rounded-pill text-bg-secondary">${el}</span>`);
 
                 append =`<tr>
                     <td>${element.name}</td>
