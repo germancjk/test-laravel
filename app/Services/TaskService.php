@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Models\{ Task, TaskRelCategory };
-use Illuminate\Support\Facades\DB;
 
 class TaskService
 {
@@ -21,10 +20,13 @@ class TaskService
 
     public function getTasks()
     {
-        $results = DB::table('tasks')
-            ->leftJoin('task_rel_categories', 'tasks.id', '=', 'task_rel_categories.task_id')
+        $results = Task::leftJoin('task_rel_categories', 'tasks.id', '=', 'task_rel_categories.task_id')
             ->leftJoin('categories', 'task_rel_categories.category_id', '=', 'categories.id')
-            ->select('tasks.id as task_id', 'tasks.name as task_name', 'categories.name as category_name')
+            ->select(
+                'tasks.id as task_id',
+                'tasks.name as task_name',
+                'categories.name as category_name'
+            )
             ->get()
             ->toArray();
         
@@ -36,22 +38,9 @@ class TaskService
         $buffer = [];
 
         foreach ($tasks as $task) {
-
-            $key = array_search($task->task_id, array_column($buffer, 'id'));
-
-            if(false===$key){
-                $buffer[] = [
-                    'id' => $task->task_id,
-                    'name' => $task->task_name,
-                    'categories' => [
-                        ['name' => $task->category_name],
-                    ],
-                ];
-            } else {
-                $buffer[$key]['categories'][] = [
-                    'name' => $task->category_name,
-                ];
-            }
+            $buffer[$task['task_id']]['id'] = $task['task_id'];
+            $buffer[$task['task_id']]['name'] = $task['task_name'];
+            $buffer[$task['task_id']]['categories'][] = $task['category_name'];
         }
 
         return $buffer;
